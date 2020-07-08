@@ -7,6 +7,7 @@ const { NODE_ENV } = require('./config')
 const { logger } = require('./logger')
 const validBearerToken = require('./validBearerToken')
 const bookmarksRouter = require('./bookmarks/bookmarks-router')
+const {error404, errorHandler } = require('./error')
 
 const app = express()
 
@@ -23,23 +24,8 @@ app.get('/', (req, res) => {
     res.send('Hello, world!')
 })
 
-app.use(bookmarksRouter)
+app.use('/bookmarks', bookmarksRouter)
 
-app.use((req, res, next) => {
-    const err = new Error('Not Found');
-    err.status = 404;
-    return next(err);
-  });
-
-app.use(function errorHandler(error, req, res, next) {
-    let response
-    if (NODE_ENV === 'production') {
-        response = { error: { message: 'server error' } }
-    } else {
-        console.error(error)
-        response = { message: error.message, error }
-    }
-    res.status(500).json(response)
-})
+app.use(error404, errorHandler)
 
 module.exports = app

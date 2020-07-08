@@ -8,3 +8,5 @@
 {"message":"Bookmark with id:2 not found.","level":"error"}
 {"message":"Bookmark with id:7 not found.","level":"error"}
 {"message":"Bookmark with id:\"1\" was deleted.","level":"info"}
+{"message":"Bookmark with id:7 not found.","level":"error"}
+{"message":"Bookmark with id:be16fdf1-62a0-408c-a450-6a781e1f70e8 created","level":"info"}
