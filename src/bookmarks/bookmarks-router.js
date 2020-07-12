@@ -39,24 +39,24 @@ bookmarksRouter
     .route('/:id')
     .get((req, res) => {
         const { id } = req.params;
-        const bookmark = bookmarks.find(book => book.id === Number(id))
+        const bookmark = bookmarks.find(book => book.id.toString() === id)
 
         if(!bookmark) {
             logger.error(`Bookmark with id:${id} not found.`)
             return res.status(404).send('Bookmark not found.')
         }
-        return res.json(bookmark)
+        return res.status(200).json(bookmark)
     })
     .delete((req, res) => {
         const { id } = req.params;
-        const bookmarkIndex = bookmarks.findIndex(book => book.id === Number(id))
+        const bookmarkIndex = bookmarks.findIndex(book => book.id.toString() === id)
         if(bookmarkIndex === -1) {
             logger.error(`Bookmark with id:"${id}" not found.`)
             res.status(404).send('Bookmark not found.')
         }
         bookmarks.splice(bookmarkIndex, 1)
         logger.info(`Bookmark with id:"${id}" was deleted.`)
-        res.status(204).send(`Bookmark with id:"${id}" was deleted.`)
+        res.status(200).send(`Bookmark with id:"${id}" was deleted.`)
     })
 
 
