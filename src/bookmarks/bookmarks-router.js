@@ -4,12 +4,18 @@ const { v4: uuid } = require('uuid')
 const bookmarks = require('../store')
 const bookmarksRouter = express.Router()
 const bodyParser = express.json()
+const BookmarksService = require('../bookmarks-service')
 
 
 bookmarksRouter
     .route('/')
-    .get((req, res) => {
-        res.json(bookmarks)
+    .get((req, res, next) => {
+        const knexInstance = req.app.get('db')
+        BookmarksService.getAllBookmarks(knexInstance)
+            .then(bookmark => {
+                res.json(bookmark)
+            })
+            .catch(next)
     })
     .post(bodyParser, (req, res) => {
         const { title, url } = req.body;
@@ -34,23 +40,30 @@ bookmarksRouter
             .location(`http://localhost:8000/bookmarks/${id}`)
             .json(bookmark)
     })
-    
+
 bookmarksRouter
     .route('/:id')
-    .get((req, res) => {
-        const { id } = req.params;
-        const bookmark = bookmarks.find(book => book.id.toString() === id)
-
-        if(!bookmark) {
-            logger.error(`Bookmark with id:${id} not found.`)
-            return res.status(404).send('Bookmark not found.')
-        }
-        return res.status(200).json(bookmark)
+    .get((err, req, res, next) => {
+        const knexInstance = req.app.get('db')
+        BookmarksService.getById(knexInstance, req.params.id)
+            .then(bookmark => {
+                console.log(bookmark, '----------------------------------')
+                if (!bookmark) {
+                    logger.error(`Bookmark with id:${id} not found.`)
+                    return res.status(404).json({
+                        error: { message: `Bookmark doesn't exist`}
+                    })
+                    // .expect(404, { error: { message: `Bookmark doesn't exist`}})
+                    // return res.status(404).send('Bookmark not found.')
+                }
+                res.json(bookmark)
+            })
+            .catch(next, err)
     })
     .delete((req, res) => {
         const { id } = req.params;
         const bookmarkIndex = bookmarks.findIndex(book => book.id.toString() === id)
-        if(bookmarkIndex === -1) {
+        if (bookmarkIndex === -1) {
             logger.error(`Bookmark with id:"${id}" not found.`)
             res.status(404).send('Bookmark not found.')
         }

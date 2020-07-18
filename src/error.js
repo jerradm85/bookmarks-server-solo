@@ -14,6 +14,7 @@ const errorHandler = function(error, req, res, next) {
         console.error(error)
         response = { message: error.message, error }
     }
+    console.log(response, '9999999999999999999999999999999999')
     res.status(500).json(response)
 }
 
