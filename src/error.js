@@ -1,21 +1,20 @@
-const { NODE_ENV } = require('./config') 
+const { NODE_ENV } = require("./config");
 
-const error404 = function(req, res, next) {
-    const err = new Error('Not Found');
-    err.status = 404;
-    return next(err);
+const error404 = function (req, res, next) {
+  const err = new Error("Not Found");
+  err.status = 404;
+  return next(err);
+};
+
+const errorHandler = function (error, req, res, next) {
+  let response;
+  if (NODE_ENV === "production") {
+    response = { error: { message: "server error" } };
+  } else {
+    console.error(error);
+    response = { message: error.message, error };
   }
+  res.status(500).json(response);
+};
 
-const errorHandler = function(error, req, res, next) {
-    let response
-    if (NODE_ENV === 'production') {
-        response = { error: { message: 'server error' } }
-    } else {
-        console.error(error)
-        response = { message: error.message, error }
-    }
-    console.log(response, '9999999999999999999999999999999999')
-    res.status(500).json(response)
-}
-
-module.exports = {errorHandler, error404};
+module.exports = { errorHandler, error404 };
