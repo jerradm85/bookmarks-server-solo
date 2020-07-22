@@ -7,7 +7,7 @@ const { NODE_ENV } = require("./config");
 // const logger = require('./logger')
 const validBearerToken = require("./validBearerToken");
 const { error404, errorHandler } = require("./error");
-const bookmarksRouter = require("./bookmarks/bookmarks-router");
+const bookmarksRouter = require("./bookmarks-router/bookmarks-router");
 
 const app = express();
 
